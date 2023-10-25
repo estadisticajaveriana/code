@@ -76,7 +76,7 @@ text.mining <- function(vector.text.mining, stop_words1_add = NULL, n_uni = 5, n
     ggraph(layout = "fr", 
            # Ajustar el area del grafico y la distancia de repulsion entre los nodos
            # Puedes experimentar con diferentes valores para estos parametros
-           # hasta encontrar una disposici?n que evite la superposicion de nodos
+           # hasta encontrar una disposicion que evite la superposicion de nodos
            niter=5000) +
     geom_edge_link() +
     geom_node_point() + 
@@ -96,7 +96,7 @@ text.mining <- function(vector.text.mining, stop_words1_add = NULL, n_uni = 5, n
 
 #UNIDAD: CONTEXTO
 #Cargar base de datos de cada unidad de analisis:
-Unidad_contexto <-  read_excel("C:/Users/Andre/OneDrive/Documentos/COMPU_IEI/1_JAVERIANA_IEI/SAE/SAE REDES/2_Analisis Texto Redes VUR/CLANES.xlsx", 
+Unidad_contexto <-  read_excel("./code/Datos/CLANES.xlsx", 
                                sheet = "Consolidado")
 
 #Instancia de la funcion con el vector de datos a analizar
@@ -114,7 +114,7 @@ text_mining_2ctx=text.mining(vector.text.mining=SubBD$Texto %>% na.omit(),
                              stop_words1_add=c(Num,"00", "01","02","03","04","05","06","07","08","09"),n_uni=5,n_bi=3)
 
 #Voy a guardar (Se guardan los resultados antes de avanzar con las métricas de la función)
-text_mining_2ctx$tablas$frecuencias %>% write.xlsx("C:/Users/Andre/OneDrive/Documentos/COMPU_IEI/1_JAVERIANA_IEI/SAE/SAE REDES/Tabla EDWIN JOSE BESAILE FAYAD.xlsx")
+text_mining_2ctx$tablas$frecuencias %>% write.xlsx("./code/RESULTADOS/TablaEDWINJOSEBESAILEFAYAD.xlsx")
 
 
 #Tabla de palabras individuales
