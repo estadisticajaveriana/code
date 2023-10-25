@@ -96,35 +96,53 @@ text.mining <- function(vector.text.mining, stop_words1_add = NULL, n_uni = 5, n
 
 #UNIDAD: CONTEXTO
 #Cargar base de datos de cada unidad de analisis:
-Unidad_contexto <-  read_excel("./code/Datos/CLANES.xlsx", 
-                               sheet = "Consolidado")
+Unidad_contexto <-  read_excel("./code/CATATUMBO/Percepción PDET en el Catatumbo(1-55).xlsx")
 
 #Instancia de la funcion con el vector de datos a analizar
 SubBD=Unidad_contexto
 
 
 ## PARA FILTRAR (SOLO SI SE NECESITA)
-SubBD <- SubBD %>% filter(NOMBRE=="EDWIN JOSE BESAILE FAYAD")
+#SubBD <- SubBD %>% filter(NOMBRE=="EDWIN JOSE BESAILE FAYAD")
 
 # Para quitar números antes de hacer la nube de palabras
 Num<-as.character(1:9999)
 
-# Se corre la funcion inicial
-text_mining_2ctx=text.mining(vector.text.mining=SubBD$Texto %>% na.omit(),
-                             stop_words1_add=c(Num,"00", "01","02","03","04","05","06","07","08","09"),n_uni=5,n_bi=3)
+# Define the variables
+variables <- c("¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 1)",
+               "¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 2)",
+               "¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 3)")
 
-#Voy a guardar (Se guardan los resultados antes de avanzar con las métricas de la función)
-text_mining_2ctx$tablas$frecuencias %>% write.xlsx("./code/RESULTADOS/TablaEDWINJOSEBESAILEFAYAD.xlsx")
+# Define a function to perform text mining and write results to Excel
+evaluate_and_write_to_excel <- function(variable_name, file_name) {
+  text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
+                                   stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
+                                   n_uni = 5,
+                                   n_bi = 3)
+  write.xlsx(text_mining_result$tablas$frecuencias, file_name)
+}
+
+# Loop through the variables and apply the function
+for (i in 1:length(variables)) {
+  file_name <- paste0("./code/RESULTADOS/CUESTIONARIO/Obstaculo", i, ".xlsx")
+  evaluate_and_write_to_excel(variables[i], file_name)
+}
 
 
 #Tabla de palabras individuales
-text_mining_2ctx$tablas$frecuencias %>% 
+text_mining_2ctx1$tablas$frecuencias %>% 
   head(20) %>% 
   kable(align = "c") %>% 
   kable_styling(full_width = F)
 
 #Tabla de pares de palabras
-text_mining_2ctx$tablas$frecuencias_bigrams %>% 
+text_mining_2ctx1$tablas$frecuencias_bigrams %>% 
+  head(20) %>% 
+  kable(align = "c") %>% 
+  kable_styling(full_width = F)
+
+#Tabla de pares de palabras
+text_mining_2ctx2$tablas$frecuencias_bigrams %>% 
   head(20) %>% 
   kable(align = "c") %>% 
   kable_styling(full_width = F)
@@ -132,17 +150,13 @@ text_mining_2ctx$tablas$frecuencias_bigrams %>%
 
 #Grafico de palabras individuales
 x11()
-wordcloud(words = text_mining_2ctx$tablas$frecuencias$word, freq = text_mining_2ctx$tablas$frecuencias$n, min.freq = 5,
+wordcloud(words = text_mining_2ctx1$tablas$frecuencias$word, freq = text_mining_2ctx$tablas$frecuencias$n, min.freq = 2,
           max.words=200, random.order=FALSE, rot.per=0.35, 
           colors=RColorBrewer::brewer.pal(8, "Dark2"))
 
-#Tabla de pares de palabras
-text_mining_2ctx$tablas$frecuencias_bigrams %>% 
-  head(20) %>% 
-  kable(align = "c") %>% 
-  kable_styling(full_width = F)
+
 
 #Grafico de pares de palabras
 x11()
-text_mining_2ctx$graficos$red_bigrams
+text_mining_2ctx2$graficos$red_bigrams
 
