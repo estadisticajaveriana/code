@@ -123,6 +123,13 @@ text_mining_2ctx$tablas$frecuencias %>%
   kable(align = "c") %>% 
   kable_styling(full_width = F)
 
+#Tabla de pares de palabras
+text_mining_2ctx$tablas$frecuencias_bigrams %>% 
+  head(20) %>% 
+  kable(align = "c") %>% 
+  kable_styling(full_width = F)
+
+
 #Grafico de palabras individuales
 x11()
 wordcloud(words = text_mining_2ctx$tablas$frecuencias$word, freq = text_mining_2ctx$tablas$frecuencias$n, min.freq = 5,
