@@ -129,6 +129,12 @@ wordcloud(words = text_mining_2ctx$tablas$frecuencias$word, freq = text_mining_2
           max.words=200, random.order=FALSE, rot.per=0.35, 
           colors=RColorBrewer::brewer.pal(8, "Dark2"))
 
+#Tabla de pares de palabras
+text_mining_2ctx$tablas$frecuencias_bigrams %>% 
+  head(20) %>% 
+  kable(align = "c") %>% 
+  kable_styling(full_width = F)
+
 #Grafico de pares de palabras
 x11()
 text_mining_2ctx$graficos$red_bigrams
