@@ -105,13 +105,20 @@ SubBD=Unidad_contexto
 ## PARA FILTRAR (SOLO SI SE NECESITA)
 #SubBD <- SubBD %>% filter(NOMBRE=="EDWIN JOSE BESAILE FAYAD")
 
-# Para quitar números antes de hacer la nube de palabras
+#Función  Para quitar números antes de hacer la nube de palabras y exportar el conteo por cada pregunta
 Num<-as.character(1:9999)
 
 # Define the variables
 variables <- c("¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 1)",
                "¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 2)",
-               "¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 3)")
+               "¿Que obstáculos impiden el desarrollo de este pilar? (Obstáculo 3)",
+               "¿Cuáles son las principales razones por las que es más o menos difícil resolver los obstáculos mencionados anteriormente?  \r\n\r\n",
+               "¿Cómo resolvería los obstáculos del pilar que mencionó anteriormente? ( Solución 1)\r\n\r\n",
+               "¿Cómo resolvería los obstáculos del pilar que mencionó anteriormente? ( Solución 2)\r\n\r\n",
+               "¿Cómo resolvería los obstáculos del pilar que mencionó anteriormente? ( Solución 3)\r\n\r\n",
+               "¿Cuáles son los principales beneficios obtenidos si se superaran los obstáculos anteriores? (Beneficio 1)\r\n\r\n",
+               "¿Cuáles son los principales beneficios obtenidos si se superaran los obstáculos anteriores? (Beneficio 2)\r\n\r\n",
+               "¿Cuáles son los principales beneficios obtenidos si se superaran los obstáculos anteriores? (Beneficio 3)\r\n\r\n")
 
 # Define a function to perform text mining and write results to Excel
 evaluate_and_write_to_excel <- function(variable_name, file_name) {
@@ -119,6 +126,7 @@ evaluate_and_write_to_excel <- function(variable_name, file_name) {
                                    stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
                                    n_uni = 5,
                                    n_bi = 3)
+ 
   write.xlsx(text_mining_result$tablas$frecuencias, file_name)
 }
 
@@ -129,34 +137,120 @@ for (i in 1:length(variables)) {
 }
 
 
-#Tabla de palabras individuales
-text_mining_2ctx1$tablas$frecuencias %>% 
-  head(20) %>% 
-  kable(align = "c") %>% 
-  kable_styling(full_width = F)
+##### función para visualizar el conteo de palabras individuales por cada variable analizada
 
-#Tabla de pares de palabras
-text_mining_2ctx1$tablas$frecuencias_bigrams %>% 
-  head(20) %>% 
-  kable(align = "c") %>% 
-  kable_styling(full_width = F)
+evaluate_function <- function(variable_name) {
+  text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
+                                   stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
+                                   n_uni = 5,
+                                   n_bi = 3)
+  
+  individ_word<-text_mining_result$tablas$frecuencias %>% 
+    head(20) %>% 
+    kable(align = "c") %>% 
+    kable_styling(full_width = F)
+  
+  # Imprimir la tabla de palabras individuales
+  print(individ_word)
 
-#Tabla de pares de palabras
-text_mining_2ctx2$tablas$frecuencias_bigrams %>% 
-  head(20) %>% 
-  kable(align = "c") %>% 
-  kable_styling(full_width = F)
+}
 
+evaluate_function(variables[1])
+evaluate_function(variables[2])
+evaluate_function(variables[3])
+evaluate_function(variables[4])
+evaluate_function(variables[5])
+evaluate_function(variables[6])
+evaluate_function(variables[7])
+evaluate_function(variables[8])
+evaluate_function(variables[9])
+evaluate_function(variables[10])
 
-#Grafico de palabras individuales
-x11()
-wordcloud(words = text_mining_2ctx1$tablas$frecuencias$word, freq = text_mining_2ctx$tablas$frecuencias$n, min.freq = 2,
-          max.words=200, random.order=FALSE, rot.per=0.35, 
-          colors=RColorBrewer::brewer.pal(8, "Dark2"))
+#####  función para visualizar el conteo de  pares de palabras por cada variable analizada
 
+evaluate_function <- function(variable_name) {
+  text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
+                                   stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
+                                   n_uni = 5,
+                                   n_bi = 3)
+  
+  #Tabla de pares de palabras
+  parespalabras<-text_mining_result$tablas$frecuencias_bigrams %>% 
+    head(20) %>% 
+    kable(align = "c") %>% 
+    kable_styling(full_width = F)
+  
+  # Imprimir la tabla de palabras individuales
+  print(parespalabras)
+  
+}
 
+evaluate_function(variables[1])
+evaluate_function(variables[2])
+evaluate_function(variables[3])
+evaluate_function(variables[4])
+evaluate_function(variables[5])
+evaluate_function(variables[6])
+evaluate_function(variables[7])
+evaluate_function(variables[8])
+evaluate_function(variables[9])
+evaluate_function(variables[10])
 
-#Grafico de pares de palabras
-x11()
-text_mining_2ctx2$graficos$red_bigrams
+#####  función para visualizar la nube de palabras  por cada variable analizada
 
+evaluate_function <- function(variable_name) {
+  text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
+                                   stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
+                                   n_uni = 5,
+                                   n_bi = 3)
+  
+  #Tabla de pares de palabras
+  x11()
+  nubepal<-wordcloud(words =  text_mining_result$tablas$frecuencias$word, freq =  text_mining_result$tablas$frecuencias$n, min.freq = 2,
+            max.words=200, random.order=FALSE, rot.per=0.35, 
+            colors=RColorBrewer::brewer.pal(8, "Dark2"))
+  
+  # Imprimir la tabla de palabras individuales
+  print(nubepal)
+  
+}
+
+evaluate_function(variables[1])
+evaluate_function(variables[2])
+evaluate_function(variables[3])
+evaluate_function(variables[4])
+evaluate_function(variables[5])
+evaluate_function(variables[6])
+evaluate_function(variables[7])
+evaluate_function(variables[8])
+evaluate_function(variables[9])
+evaluate_function(variables[10])
+
+### función para visualizar las redes de palabras
+
+evaluate_function <- function(variable_name) {
+  text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
+                                   stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
+                                   n_uni = 5,
+                                   n_bi = 3)
+  
+  #Tabla de pares de palabras
+  #Grafico de pares de palabras
+  x11()
+  redes<-text_mining_result$graficos$red_bigrams
+  
+  # Imprimir la tabla de palabras individuales
+  print(redes)
+  
+}
+
+evaluate_function(variables[1])
+evaluate_function(variables[2])
+evaluate_function(variables[3])
+evaluate_function(variables[4])
+evaluate_function(variables[5])
+evaluate_function(variables[6])
+evaluate_function(variables[7])
+evaluate_function(variables[8])
+evaluate_function(variables[9])
+evaluate_function(variables[10])
