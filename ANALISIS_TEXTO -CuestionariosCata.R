@@ -132,14 +132,14 @@ evaluate_and_write_to_excel <- function(variable_name, file_name) {
 
 # Loop through the variables and apply the function
 for (i in 1:length(variables)) {
-  file_name <- paste0("./code/RESULTADOS/CUESTIONARIO/Obstaculo", i, ".xlsx")
+  file_name <- paste0("./code/RESULTADOS/CUESTIONARIO/Categoria", i, ".xlsx")
   evaluate_and_write_to_excel(variables[i], file_name)
 }
 
 
 ##### función para visualizar el conteo de palabras individuales por cada variable analizada
 
-evaluate_function <- function(variable_name) {
+evaluate_function1 <- function(variable_name) {
   text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
                                    stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
                                    n_uni = 5,
@@ -155,20 +155,20 @@ evaluate_function <- function(variable_name) {
 
 }
 
-evaluate_function(variables[1])
-evaluate_function(variables[2])
-evaluate_function(variables[3])
-evaluate_function(variables[4])
-evaluate_function(variables[5])
-evaluate_function(variables[6])
-evaluate_function(variables[7])
-evaluate_function(variables[8])
-evaluate_function(variables[9])
-evaluate_function(variables[10])
+#evaluate_function(variables[1])
+#evaluate_function(variables[2])
+#evaluate_function(variables[3])
+#evaluate_function(variables[4])
+#evaluate_function(variables[5])
+#evaluate_function(variables[6])
+#evaluate_function(variables[7])
+#evaluate_function(variables[8])
+#evaluate_function(variables[9])
+#evaluate_function(variables[10])
 
 #####  función para visualizar el conteo de  pares de palabras por cada variable analizada
 
-evaluate_function <- function(variable_name) {
+evaluate_function2 <- function(variable_name) {
   text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
                                    stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
                                    n_uni = 5,
@@ -185,20 +185,20 @@ evaluate_function <- function(variable_name) {
   
 }
 
-evaluate_function(variables[1])
-evaluate_function(variables[2])
-evaluate_function(variables[3])
-evaluate_function(variables[4])
-evaluate_function(variables[5])
-evaluate_function(variables[6])
-evaluate_function(variables[7])
-evaluate_function(variables[8])
-evaluate_function(variables[9])
-evaluate_function(variables[10])
+#evaluate_function(variables[1])
+#evaluate_function(variables[2])
+#evaluate_function(variables[3])
+#evaluate_function(variables[4])
+#evaluate_function(variables[5])
+#evaluate_function(variables[6])
+#evaluate_function(variables[7])
+#evaluate_function(variables[8])
+#evaluate_function(variables[9])
+#evaluate_function(variables[10])
 
 #####  función para visualizar la nube de palabras  por cada variable analizada
 
-evaluate_function <- function(variable_name) {
+evaluate_function3 <- function(variable_name) {
   text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
                                    stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
                                    n_uni = 5,
@@ -215,20 +215,20 @@ evaluate_function <- function(variable_name) {
   
 }
 
-evaluate_function(variables[1])
-evaluate_function(variables[2])
-evaluate_function(variables[3])
-evaluate_function(variables[4])
-evaluate_function(variables[5])
-evaluate_function(variables[6])
-evaluate_function(variables[7])
-evaluate_function(variables[8])
-evaluate_function(variables[9])
-evaluate_function(variables[10])
+#evaluate_function3(variables[1])
+#evaluate_function3(variables[2])
+#evaluate_function3(variables[3])
+#evaluate_function3(variables[4])
+#evaluate_function3(variables[5])
+#evaluate_function3(variables[6])
+#evaluate_function3(variables[7])
+#evaluate_function3(variables[8])
+#evaluate_function3(variables[9])
+#evaluate_function3(variables[10])
 
 ### función para visualizar las redes de palabras
 
-evaluate_function <- function(variable_name) {
+evaluate_function4 <- function(variable_name) {
   text_mining_result = text.mining(vector.text.mining = SubBD[[variable_name]] %>% na.omit(),
                                    stop_words1_add = c(Num, "00", "01", "02", "03", "04", "05", "06", "07", "08", "09"),
                                    n_uni = 5,
@@ -244,13 +244,13 @@ evaluate_function <- function(variable_name) {
   
 }
 
-evaluate_function(variables[1])
-evaluate_function(variables[2])
-evaluate_function(variables[3])
-evaluate_function(variables[4])
-evaluate_function(variables[5])
-evaluate_function(variables[6])
-evaluate_function(variables[7])
-evaluate_function(variables[8])
-evaluate_function(variables[9])
-evaluate_function(variables[10])
+#evaluate_function4(variables[1])
+#evaluate_function4(variables[2])
+#evaluate_function4(variables[3])
+#evaluate_function4(variables[4])
+#evaluate_function4(variables[5])
+#evaluate_function4(variables[6])
+#evaluate_function4(variables[7])
+#evaluate_function4(variables[8])
+#evaluate_function4(variables[9])
+#evaluate_function4(variables[10])
