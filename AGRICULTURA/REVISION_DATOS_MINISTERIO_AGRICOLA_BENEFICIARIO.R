@@ -15,12 +15,12 @@ library(forcats)
 ################################################################################
 ### RUTA DE ARCHIVOS
 getwd()
-setwd("~/COMPU_IEI/1_JAVERIANA_IEI/MINISTERIO DE AGRICULTURA")
+#setwd("~/COMPU_IEI/1_JAVERIANA_IEI/MINISTERIO DE AGRICULTURA")
 
 ################################################################################
 ### CARGUE DE DATOS
 
-Beneficiarios  <- read_excel("Datos productores beneficiarios/carguemasivo_beneficiario_estado_Anoni.xlsx", 
+Beneficiarios  <- read_excel("./code/AGRICULTURA/carguemasivo_beneficiario_estado_Anoni.xlsx", 
                         col_types = c("numeric", "text", "date", 
                          "text", "text", "numeric", "text", 
                          "text", "text", "text", "numeric", 
@@ -188,6 +188,9 @@ Ben$Genero <- Ben$Genero %>%
   ifelse(. %in% c("NULL", "ND"), NA, .) %>%  toupper()
 table(Ben$Genero, useNA = "ifany")
 
+
+
+
 # Hay datos en la variable genero que pueden mejorar la calidad de la variable sexo
 # Se decide crear una nueva variable que una ambas
 Ben$Sexo2 <- ifelse(is.na(Ben$Sexo), Ben$Genero, Ben$Sexo)
@@ -254,22 +257,17 @@ Ben$RazonSocialContratista <- Ben$RazonSocialContratista %>%
   ) %>% as.character() %>%  toupper()
 
 
-## VARIABLES A MEJORAR
-# Programa (Se pueden ubicar valores comunes) (Poner en Mayúsculas)
-# ProyectoInversion cambiar NULL por datos faltantes
-# NoConvenio (Cambiar F y Null por NA )
-# DescripcionConvenio (pasar todo a Mayusculas)
-# NitContratista (cambiar Null a NA)
-# RazonSocialContratista Pasar a mayúscula y unificar terminos (Cambiar Null por NA)
-# Edad (dejar solo las personas entre 10 y 100 años, el resto pasar a NA)
-# Correo (Pasar a Mayúsculas, dejar solo los objetos con @)
-# TelefonoContacto (Dejar solo los números de 7 y 10 dígitos)
-# NombrePredio (Poner en Mayúsculas)
-# MunicipioPDET (NULL y NA poner como dato faltante)
-# Observaciones (Quitar NULL, poner todo en mayúscula quitar acentos, revisar si algo se puede agrupar)
+### REEMPLAZAR F POR NA
+Ben$NoConvenio <-Ben$NoConvenio %>%
+  as.character() %>%
+  ifelse(. %in% c("F"), NA, .) %>%  toupper()
+
+### LIMITAR EDADES DE 0 A 118 AÑOS, LAS DEMAS CONVERTIRLAS A NA
+
+Ben$Edad[Ben$Edad>118|Ben$Edad <0] <- NA
 
 
-# Pasar todo a mayúscula
+############ Pasar todo a mayúscula
 # Bucle a través de cada columna en el dataframe
 for (column in names(Ben)) {
   # Verificar si la columna es de tipo carácter
@@ -278,6 +276,52 @@ for (column in names(Ben)) {
     Ben[[column]] <- toupper(Ben[[column]])
   }
 }
+
+############################### Agrupar información de columna Observaciones #########################################
+
+# Listado de palabras clave
+palabras_clave <- c("AGUA POTABLE", "AGUACATE", "AVICOLA","CACAO", "LULO", 
+                    "PRODUCCION Y COMERCIALIZACION DE YUCA Y MAIZ","ESTABLECIMEINTO Y COMERCIALIZACION DE CUTIVOS ",	
+                    "SIEMBRA YUCA, PLATANO Y MAIZ","CAÑA","SACHA INCHI","TRUCHA","TOMATE","PANELA","PAPA","LECHE","LIMÓN","PORCINOS","PORCICOLA"," PORCICULTURA",
+                    "MAIZ","PRODUCCION Y COMERCIALIZACION DE YUCA Y MAIZ","MARACUYA","MIEL","MODISTERIA","MORA","YUCA","VIVERO",
+                    "VENTA DE ANIMAL DE ABASTO","UCHUVA","TURISMO","TRUCHA","TRILLADORA ARROZ","TRAPICHE","YUCA","CAFE","TRANSFORMACIÓN DE PLATANO"," TILAPIA","BELLEZA"," RESTAURANTE")
+
+# Función para buscar la palabra clave en el texto
+buscar_palabra_clave <- function(texto, palabras_clave) {
+  for (palabra in palabras_clave) {
+    if (grepl(palabra, texto, ignore.case = TRUE)) {
+      return(palabra)
+    }
+  }
+  return(texto)  # Devuelve el texto original si no encuentra ninguna palabra clave
+}
+
+# Aplicar la función a la columna del data frame y crear una nueva columna
+Ben$Categorias <- sapply(Ben$Observaciones, buscar_palabra_clave, palabras_clave)
+
+table(Ben$Categorias, useNA = "ifany") 
+
+table(Ben$Observaciones, useNA = "ifany") 
+
+
+## VARIABLES A MEJORAR
+# Programa (Se pueden ubicar valores comunes) (Poner en Mayúsculas) (ok)
+# ProyectoInversion cambiar NULL por datos faltantes (OK)
+# NoConvenio (Cambiar F y Null por NA ) (OK)
+# DescripcionConvenio (pasar todo a Mayusculas) (ok)
+# NitContratista (cambiar Null a NA) (ok)
+# RazonSocialContratista Pasar a mayúscula y unificar terminos (Cambiar Null por NA) (OK)
+# Edad (dejar solo las personas entre 10 y 100 años, el resto pasar a NA) (OK)
+# Correo (Pasar a Mayúsculas, dejar solo los objetos con @)
+# TelefonoContacto (Dejar solo los números de 7 y 10 dígitos)
+# NombrePredio (Poner en Mayúsculas) (OK)
+# MunicipioPDET (NULL y NA poner como dato faltante) (OK)
+# Observaciones (Quitar NULL, poner todo en mayúscula quitar acentos, revisar si algo se puede agrupar)
+## Númerodehectareascultivo (remover valores atipicos de hectareas, quitar valores N/A, los valores superiores a 900 mil están en mt2 comparando hectareas predio convertir/ 100.000)
+## NoHectareaPredio (transforma los valores mayores a un millon que posiblemente estén digitados en mt2s y transformarlo en hectareas)
+#### Valor de beneficio (revisar la distribución de los datos y tratar de eliminar valores atipicos que no tengan sentido)
+
+
 
 
 # DATA SET FINAL
