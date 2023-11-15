@@ -284,6 +284,9 @@ Ben$NoHectareaCultivo <-Ben$NoHectareaCultivo %>%
 
 Ben$NoHectareaCultivo <- as.numeric(Ben$NoHectareaCultivo)
 Ben$NoHectareaPredio <- as.numeric(Ben$NoHectareaPredio)
+
+### Convertir de mts2 a hectareas
+
 Ben$NoHectareaCultivo <- ifelse(Ben$NoHectareaCultivo > 900000, Ben$NoHectareaCultivo / 10000, Ben$NoHectareaCultivo)
 Ben$NoHectareaPredio <- ifelse(Ben$NoHectareaPredio > 1000000, Ben$NoHectareaPredio / 10000, Ben$NoHectareaPredio)
 
@@ -327,11 +330,12 @@ hist(filtered_bene500M$ValorBeneficio,
      breaks = 10)
 
 
-#### 
+########## Rangos de beneficio y resumen porcentual por cada rango 
 Ben$RangoBeneficio1 <- cut(Ben$ValorBeneficio,c(-1, 500000, 1000000, 3000000,5000000, 10000000, 20000000, 40000000, 100000000, 300000000, 500000000, 5000000000, Inf),
                                     labels = c( "0 a 500.000", "500.000 a 1.000.000", "1.000.000 a 3.000.000","3.000.000 a 5.000.000", "5.000.000 a 10.000.000", "10.000.000 a 20.000.000", "20.000.000 a 40.000.000",
                                                 "40.000.000 a 100.000.000", "100.000.000 a 300.000.000", "300.000.000 a 500.000.000", "500.000.000 a 5000.000.000", "Mayor a 5.000.000.000"))
 
+##### Tablas resumen por rangos beneficio
 table_counts<-table(Ben$RangoBeneficio1, useNA = "ifany")
 # Convert counts to percentages
 table_percentages <- prop.table(table_counts) * 100
@@ -342,13 +346,48 @@ table_percentages <- prop.table(table_counts) * 100
 ### eliminar tildes de la columna observaciones
 Ben$Observaciones<- iconv(Ben$Observaciones, to = "ASCII//TRANSLIT")
 
+############ Se crea una nueva variable con las categorias que se podrían codificar
+
+Ben$Observaciones_codif <- Ben$Observaciones %>%
+  fct_collapse(
+    `ELABORACION DE ARTESANIAS` = c("ELABORACION ARTESANIAS"),
+    ` ELABORACION DE QUESOS,OTROS ` = c("ELABORACION DE QUESO, YOGURTH, ETC."),
+    ` ELABORACION DE QUESOS,OTROS ` = c("ELABORACION DE QUESOS"),
+    ` ELABORACION DE QUESOS,OTROS ` = c("ELABORACION Y VENTA DE QUESO"),
+    ` ELABORACION DE QUESOS,OTROS ` = c("FABRICACION DE QUESO Y SUERO COSTENO"),
+    ` ELABORACION DE QUESOS,OTROS ` = c("FABRICACION DE QUESOS"),
+    ` PORCINOS ` = c("LECHONES DE 30 A 40DIAS EN PIE Y CERDOS DE 90 KG A 100 KG"),
+    ` PORCINOS ` = c("LECHONES DE 30 DIAS EN PIE Y CERDAS DE CRIA"),
+    ` PORCINOS ` = c("LEVANTE DE CERDOS CEBA"),
+    ` PORCINOS ` = c("LEVANTE Y CEBA DE LECHONES"),
+    ` PORCINOS ` = c("PRODUCCION Y COMERCIALIZACION DE CERDOS EN PIE Y EN CANAL"),
+    ` MISCELANEA` = c("MICELANEA"),
+    ` MISCELANEA RURAL ` = c("MICELANEA RURAL"),
+    ` PANADERIA` = c("PAN ARTESANAL RELLENO- PAN ARTESANAL"),
+    ` PANADERIA` = c("PAN DE SAL Y DE DULCE"),
+    ` PANADERIA` = c("PNADERIA"),
+    ` PECES` = c("PESCA DE ALTURA"),
+    ` PECES` = c("PESCADO MOJARRA Y/O CACHAMA"),
+    ` PECES` = c("PRODUCCION Y COMERCIALIZACION DE PESCES"),
+    ` PISCICOLA` = c("PISCIOLA GIRON ASOMUTRADER"),
+    ` PORCICULTURA` = c("PORCIULTURA"),
+    ` PORCICULTURA` = c("PORCICUTURA"),
+    `PISCICULTURA` = c("PSCICULTURA"),
+    `RECICLAJE` = c("RECICLAGE"),
+    `ELABORACION Y COMERCIALIZACION DE ARTESANIAS` = c("ELABORACION MOCHILA, SOMBREROS"),
+    `ELABORACION Y COMERCIALIZACION DE ARTESANIAS` = c("ELABORACION Y COMERCIALIZACION DE ARTESANIA"),
+    `ELABORACION Y COMERCIALIZACION DE ARTESANIAS` = c("ELABORACION Y COMERCIALIZACION DE ARTESANIAS EN HILOS, DAMAGUA Y CABECINEGRO"),
+    `ELABORACION Y COMERCIALIZACION DE ARTESANIAS` = c("ELABORACION Y VENTA DE ARTESANIAS"),
+    `ESTABLECIMIENTO COMERCIAL PARA LA VENTA DE AGROINSUMOS Y MAQUINARIA AGROPECUARIA` = c("ESTABLECIMIENTO COMERCIAL DE AGOINSUMOS Y MAQUINARIA AGRICOLA")
+    ) %>% as.character() %>%  toupper()
 
 
 # Listado de palabras clave
 
-palabras_clave <- c("AGUA POTABLE", "AGUACATE", "AVICOLA","CACAO", "LULO", 
+palabras_clave <- c("AGUA POTABLE", "AGUACATE", "AVICOLA","CACAO", "LULO", "GALLINAS","GANADERIA","GANADO", "GRANJA INTEGRAL", "GULUPA","HORTALIZAS", "HUEVO","HUEVOS","INVERNADERO","FRUTAS", "INVERNADERO", "LACTEOS","POLLOS", "MISCELANEA","NAME", "NOVILLAS","NOVILLO","NOVILLOS","OVINO","OVINOS","PANADERIA","PAPELERIA","PECES","PINA","PISCICOLA","PISCICULTURA",
+                    "PLATANO","PRODUCCCION DE ARTESANIAS EN LANA","PRODUCCION DE FRESA","FRUTALES","MANGO","QUESOS","QUESO","RECICLAJE","RESTAURANTE","RESTAURANTES","ARROZ","TALLER DE CONFECCION","TALLER CONFECCIONES",
                     "PRODUCCION Y COMERCIALIZACION DE YUCA Y MAIZ","ESTABLECIMEINTO Y COMERCIALIZACION DE CUTIVOS ","PLATANO BUENAVISTA MUJERES CAFETERAS",	"TIENDA MOVIL TIPO CAFETERIA","CAFETERIA","CAFE INTERNET Y SERVICIO FOTOGRAFICO"," CAFETERIA ",
-                    "SIEMBRA YUCA, PLATANO Y MAIZ","CAÑA","SACHA INCHI","TRUCHA","TOMATE","PANELA","PAPA","LECHE","LIMÓN","PORCINOS","PORCICOLA"," PORCICULTURA",
+                    "SIEMBRA YUCA, PLATANO Y MAIZ","CANA","SACHA INCHI","TRUCHA","TOMATE","PANELA","PAPA","LECHE","LIMON","PORCINOS","PORCICOLA"," PORCICULTURA",
                     "MAIZ","PRODUCCION Y COMERCIALIZACION DE YUCA Y MAIZ","MARACUYA","MIEL","MODISTERIA","MORA","YUCA","VIVERO","VENTA DE ANIMAL DE ABASTO","UCHUVA","TURISMO","TRUCHA","TRILLADORA ARROZ","TRAPICHE","YUCA","CAFE","TRANSFORMACION DE PLATANO"," TILAPIA","BELLEZA"," RESTAURANTE","HARINA DE BANANO Y TE DE CASCARA DE CAFE")
 
 # Función para buscar la palabra clave en el texto
@@ -362,7 +401,7 @@ buscar_palabra_clave <- function(texto, palabras_clave) {
 }
 
 # Aplicar la función a la columna del data frame y crear una nueva columna
-Ben$Categorias <- sapply(Ben$Observaciones, buscar_palabra_clave, palabras_clave)
+Ben$Categorias <- sapply(Ben$Observaciones_codif, buscar_palabra_clave, palabras_clave)
 
 table(Ben$Categorias, useNA = "ifany") 
 
@@ -382,7 +421,7 @@ table(Ben$Observaciones, useNA = "ifany")
 # NombrePredio (Poner en Mayúsculas) (OK)
 # MunicipioPDET (NULL y NA poner como dato faltante) (OK)
 # Observaciones (Quitar NULL, poner todo en mayúscula quitar acentos, revisar si algo se puede agrupar)(en proceso)
-## Númerodehectareascultivo (remover valores atipicos de hectareas, quitar valores N/A, los valores superiores a 900 mil están en mt2 comparando hectareas predio convertir/ 100.000) (OK)
+## Númerodehectareascultivo (remover valores atipicos de hectareas, quitar valores N/A, los valores superiores a 900 mil están en mt2 comparando hectareas predio convertir/ 10.000) (OK)
 ## NoHectareaPredio (transforma los valores mayores a un millon que posiblemente estén digitados en mt2s y transformarlo en hectareas, hay dos valores atipicos en 6400 hectareas se dejan tal cual) (OK)
 #### Valor de beneficio (revisar la distribución de los datos y tratar de eliminar valores atipicos que no tengan sentido, no se elimina ningún dato por ahora) (OK)
 
